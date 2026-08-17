@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     },
     email:{
         type:String,
-        requires:true,
+        required:true,
         unique:true
     },
     phone:{
@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     },
     subscribers:{
         type:Number,
-        required:true
+        default: 0
     },
     subscribedchannels:[{
         type:mongoose.Schema.Types.ObjectId, ref:"User"
