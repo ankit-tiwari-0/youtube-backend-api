@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import imagekit from "../config/imagekit.js";
 import User from "../models/user.model.js";
 import fs from "fs/promises";
+import jwt from "jsonwebtoken";
+
 
 
 export const signup = async (req, res) => {
@@ -42,6 +44,41 @@ export const signup = async (req, res) => {
     }
 }
 
-export const login = async(req, res) =>{
-    res.send("ok")
+export const login = async (req, res) => {
+    try {
+        const existingUser = await User.findOne({ email: req.body.email });
+
+        if (!existingUser) {
+            return res.status(404).json({ message: "User not found" })
+        }
+
+        const isValid = await bcrypt.compare(
+            req.body.password,
+            existingUser.password
+        )
+
+        if (!isValid) {
+            return res.status(500).json({ message: "Invalid credentials" })
+        }
+
+        const token = jwt.sign(
+            {
+                id: existingUser._id
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "1h"
+            }
+        );
+       
+        res.status(200).json({
+            success:true,
+            message:"LOGIN Successfully"
+         })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
 }
