@@ -1,5 +1,6 @@
-import express from "express"
+import express, { json } from "express"
 import dotenv from "dotenv"
+import fileUpload from "express-fileupload"
 
 
 import { connectDB } from "./config/db.js"
@@ -10,6 +11,16 @@ dotenv.config()
 
 const app = express()
 connectDB()
+
+
+app.use(fileUpload({
+    useTempFiles:true,
+    tempFileDir:"/tmp"
+}))
+
+app.use(json())
+
+
 app.use("/api/user", useroute)
 
 
