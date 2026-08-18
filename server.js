@@ -18,6 +18,8 @@ app.use(fileUpload({
     tempFileDir:"/tmp"
 }))
 
+app.use(express.urlencoded({ extended: true }));
+
 app.use(json())
 
 
