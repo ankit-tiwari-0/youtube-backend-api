@@ -5,6 +5,7 @@ import fileUpload from "express-fileupload"
 
 import { connectDB } from "./config/db.js"
 import useroute from "./config/router/user.router.js"
+import videoRoutes from "./config/router/video.routes.js"
 
 dotenv.config()
 
@@ -24,6 +25,7 @@ app.use(json())
 
 
 app.use("/api/user", useroute)
+app.use("/api/video", videoRoutes)
 
 
 
