@@ -1,11 +1,13 @@
 import { Router } from "express";
-import { upload } from "../../controller/video.controller.js";
+import { update, upload } from "../../controller/video.controller.js";
 import { checkAuth } from "../../middleware/auth.middleware.js";
 
 const videoRoutes = Router()
 
 
 videoRoutes.post("/upload", checkAuth, upload)
+
+videoRoutes.put("/update/:id", checkAuth, update)
 
 
 export default videoRoutes

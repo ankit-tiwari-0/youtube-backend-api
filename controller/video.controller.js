@@ -79,3 +79,7 @@ export const upload = async (req, res) => {
         });
     }
 };
+
+export const update = async (req, res) => {
+    res.send("ok")
+}
