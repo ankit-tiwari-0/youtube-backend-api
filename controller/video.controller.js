@@ -164,3 +164,51 @@ export const update = async (req, res) => {
         });
     }
 };
+
+export const deleteVideo = async (req, res) => {
+    try {
+        const videoId = req.params.id;
+
+        const video = await Video.findById(videoId);
+
+        if (!video) {
+            return res.status(404).json({
+                success: false,
+                message: "Video not found"
+            });
+        }
+
+        // Only owner can delete
+        if (video.user_id.toString() !== req.user.id.toString()) {
+            return res.status(403).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+
+        // Delete video from ImageKit
+        if (video.videoId) {
+            await imagekit.deleteFile(video.videoId);
+        }
+
+        // Delete thumbnail from ImageKit
+        if (video.thumbnailId) {
+            await imagekit.deleteFile(video.thumbnailId);
+        }
+
+        // Delete from MongoDB
+        await Video.findByIdAndDelete(videoId);
+
+        return res.status(200).json({
+            success: true,
+            message: "Video deleted successfully"
+        });
+         } catch (error) {
+        console.error("Delete Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
