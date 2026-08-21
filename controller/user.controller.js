@@ -153,3 +153,61 @@ export const updateProfile = async (req, res) => {
         });
     }
 };
+
+export const subscribe = async (req, res) => {
+    try {
+        const { channelId } = req.body;
+
+        const userId = req.user.id;
+
+        // Cannot subscribe to yourself
+        if (userId.toString() === channelId.toString()) {
+            return res.status(400).json({
+                success: false,
+                message: "You cannot subscribe to yourself"
+            });
+        }
+
+        const channel = await User.findById(channelId);
+
+        if (!channel) {
+            return res.status(404).json({
+                success: false,
+                message: "Channel not found"
+            });
+        }
+
+        // Add channel to subscribed channels
+        await User.findByIdAndUpdate(
+            userId,
+            {
+                $addToSet: {
+                    subscribedchannels: channelId
+                }
+            }
+        );
+
+        // Increase subscriber count
+        await User.findByIdAndUpdate(
+            channelId,
+            {
+                $inc: {
+                    subscribers: 1
+                }
+            }
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Subscribed successfully"
+        });
+
+    } catch (error) {
+        console.error("Subscription Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
