@@ -35,3 +35,45 @@ export const addComment = async (req, res) => {
 };
 
 
+// 🔹 Delete Comment
+export const deleteComment = async (req, res) => {
+    try {
+        const { commentId } = req.params;
+
+        const comment = await Comment.findById(commentId);
+
+        if (!comment) {
+            return res.status(404).json({
+                success: false,
+                message: "Comment not found"
+            });
+        }
+
+        // Only comment owner can delete
+        if (
+            comment.user_id.toString() !==
+            req.user.id.toString()
+        ) {
+            return res.status(403).json({
+                success: false,
+                message: "Unauthorized to delete this comment"
+            });
+        }
+
+        await Comment.findByIdAndDelete(commentId);
+
+        return res.status(200).json({
+            success: true,
+            message: "Comment deleted successfully"
+        });
+
+    } catch (error) {
+        console.error("Error deleting comment:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
