@@ -12,7 +12,7 @@ export const checkOwnership = async (req, res, next) => {
     }
 
     // Check if the video belongs to the logged-in user
-    if (video.user_id.toString() !== req.user._id.toString()) {
+    if (video.user_id.toString() !== req.user.id.toString()) {
       return res.status(403).json({ error: "You don't have permission to perform this action" });
     }
 
