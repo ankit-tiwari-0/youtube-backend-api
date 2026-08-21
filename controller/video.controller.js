@@ -253,3 +253,45 @@ export const getMyVideos = async (req, res) => {
         });
     }
 };
+
+
+
+export const getVideoById = async (req, res) => {
+    try {
+        const videoId = req.params.id;
+        const userId = req.user.id;
+
+        const video = await Video.findByIdAndUpdate(
+            videoId,
+            {
+                $addToSet: {
+                    viewedBy: userId
+                }
+            },
+            {
+                new: true
+            }
+        );
+
+        if (!video) {
+            return res.status(404).json({
+                success: false,
+                message: "Video not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            video
+        });
+
+    } catch (error) {
+        console.error("Fetch Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
