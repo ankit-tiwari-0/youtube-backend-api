@@ -73,7 +73,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/user", useroute)
 app.use("/api/video", videoRoutes)
-app.use("app/comment", router)
+app.use("/api/comment", router)
 
 
 
