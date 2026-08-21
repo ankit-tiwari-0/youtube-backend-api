@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { deleteVideo, getAllVideos, getMyVideos, getVideoById,
+import { deleteVideo, dislikeVideo, getAllVideos, getMyVideos, getVideoById,
  getVideosByCategory, likeVideo, update, upload } from "../../controller/video.controller.js";
 import { checkAuth } from "../../middleware/auth.middleware.js";
 
@@ -23,5 +23,7 @@ videoRoutes.get("/category/:category", getVideosByCategory)
 videoRoutes.get("/tag/:tag", getVideosByTag)
 
 videoRoutes.post("/like", checkAuth, likeVideo)
+
+videoRoutes.post("/dislike", checkAuth, dislikeVideo )
 
 export default videoRoutes

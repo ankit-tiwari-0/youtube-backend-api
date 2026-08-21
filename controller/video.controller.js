@@ -380,3 +380,46 @@ export const likeVideo = async (req, res) => {
         });
     }
 };
+
+
+export const dislikeVideo = async (req, res) => {
+    try {
+        const { videoId } = req.body;
+        const userId = req.user.id;
+
+        const video = await Video.findByIdAndUpdate(
+            videoId,
+            {
+                $addToSet: {
+                    dislikes: userId
+                },
+                $pull: {
+                    likes: userId
+                }
+            },
+            {
+                new: true
+            }
+        );
+
+        if (!video) {
+            return res.status(404).json({
+                success: false,
+                message: "Video not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Disliked the video"
+        });
+
+    } catch (error) {
+        console.error("Dislike Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
