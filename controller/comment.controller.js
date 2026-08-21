@@ -77,3 +77,55 @@ export const deleteComment = async (req, res) => {
     }
 };
 
+
+export const updateComment = async (req, res) => {
+    try {
+        const { commentId } = req.params;
+        const { commentText } = req.body;
+
+        if (!commentText) {
+            return res.status(400).json({
+                success: false,
+                message: "Comment text is required"
+            });
+        }
+
+        const comment = await Comment.findById(commentId);
+
+        if (!comment) {
+            return res.status(404).json({
+                success: false,
+                message: "Comment not found"
+            });
+        }
+
+        // Only comment owner can edit
+        if (
+            comment.user_id.toString() !==
+            req.user.id.toString()
+        ) {
+            return res.status(403).json({
+                success: false,
+                message: "Unauthorized to edit this comment"
+            });
+        }
+
+        comment.commentText = commentText;
+
+        await comment.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Comment updated successfully",
+            comment
+        });
+
+    } catch (error) {
+        console.error("Error updating comment:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
