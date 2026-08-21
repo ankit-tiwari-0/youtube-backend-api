@@ -295,3 +295,23 @@ export const getVideoById = async (req, res) => {
     }
 };
 
+export const getVideosByCategory = async (req, res) => {
+    try {
+        const videos = await Video.find({
+            category: req.params.category
+        }).sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            success: true,
+            videos
+        });
+
+    } catch (error) {
+        console.error("Fetch Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
