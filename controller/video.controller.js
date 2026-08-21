@@ -80,6 +80,87 @@ export const upload = async (req, res) => {
     }
 };
 
+
 export const update = async (req, res) => {
-    res.send("ok")
-}
+    try {
+        const { title, description, category, tags } = req.body;
+        const videoId = req.params.id;
+
+        // Find video
+        const video = await Video.findById(videoId);
+
+        if (!video) {
+            return res.status(404).json({
+                success: false,
+                message: "Video not found"
+            });
+        }
+
+        // Only owner can update
+        if (video.user_id.toString() !== req.user.id.toString()) {
+            return res.status(403).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+
+        // Update thumbnail if provided
+        if (req.files?.thumbnail) {
+
+            // Delete old thumbnail from ImageKit
+            if (video.thumbnailId) {
+                await imagekit.deleteFile(video.thumbnailId);
+            }
+
+            // Read new thumbnail
+            const thumbnailBuffer = await fs.readFile(
+                req.files.thumbnail.tempFilePath
+            );
+
+            // Upload new thumbnail
+            const thumbnailUpload = await imagekit.upload({
+                file: thumbnailBuffer,
+                fileName: req.files.thumbnail.name,
+                folder: "/thumbnails"
+            });
+
+            video.thumbnailUrl = thumbnailUpload.url;
+            video.thumbnailId = thumbnailUpload.fileId;
+        }
+
+        // Update text fields
+        if (title) {
+            video.title = title;
+        }
+
+        if (description) {
+            video.description = description;
+        }
+
+        if (category) {
+            video.category = category;
+        }
+
+        if (tags) {
+            video.tags = tags
+                .split(",")
+                .map(tag => tag.trim());
+        }
+
+        await video.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Video updated successfully",
+            video
+        });
+
+    } catch (error) {
+        console.error("Update Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
