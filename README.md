@@ -1,5 +1,8 @@
 # 🎬 YouTube Backend API
 
+<img width="1916" height="991" alt="image" src="https://github.com/user-attachments/assets/3314276c-aa49-42e5-83df-9b406d847a79" />
+
+
 A backend-only REST API inspired by core YouTube functionality.
 
 This project provides APIs for:
