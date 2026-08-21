@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { deleteVideo, getAllVideos, update, upload } from "../../controller/video.controller.js";
+import { deleteVideo, getAllVideos, getMyVideos, update, upload } from "../../controller/video.controller.js";
 import { checkAuth } from "../../middleware/auth.middleware.js";
 
 const videoRoutes = Router()
@@ -12,5 +12,7 @@ videoRoutes.put("/update/:id", checkAuth, update)
 videoRoutes.delete("/delete/:id", checkAuth , deleteVideo)
 
 videoRoutes.get("/all", getAllVideos)
+
+videoRoutes.get("/my-videos", checkAuth, getMyVideos) 
 
 export default videoRoutes

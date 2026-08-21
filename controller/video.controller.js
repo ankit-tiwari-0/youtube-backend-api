@@ -232,3 +232,24 @@ export const getAllVideos = async (req, res) => {
         });
     }
 };
+
+export const getMyVideos = async (req, res) => {
+    try {
+        const videos = await Video.find({
+            user_id: req.user.id
+        }).sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            success: true,
+            videos
+        });
+
+    } catch (error) {
+        console.error("Fetch Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
