@@ -129,3 +129,33 @@ export const updateComment = async (req, res) => {
         });
     }
 };
+
+export const getVideoComments = async (req, res) => {
+    try {
+        const { videoId } = req.params;
+
+        const comments = await Comment.find({
+            video_id: videoId
+        })
+            .populate(
+                "user_id",
+                "channelName logoUrl"
+            )
+            .sort({
+                createdAt: -1
+            });
+
+        return res.status(200).json({
+            success: true,
+            comments
+        });
+
+    } catch (error) {
+        console.error("Error fetching comments:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
