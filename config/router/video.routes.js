@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { deleteVideo, dislikeVideo, getAllVideos, getMyVideos, getVideoById,
- getVideosByCategory, likeVideo, update, upload } from "../../controller/video.controller.js";
+ getVideosByCategory, getVideosByTag, likeVideo, update, upload } from "../../controller/video.controller.js";
 import { checkAuth, checkOwnership } from "../../middleware/auth.middleware.js";
 
 const videoRoutes = Router()
